@@ -1,6 +1,15 @@
+[tool.poetry]
+name = "PaddleDailyNews"
+version = "0.0.1"
+description = ""
+authors = ["Liyulingyue", "gouzil"]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
 [tool.ruff]
 line-length = 120
-target-version = "py310"
+target-version = "py311"
 # Enable Pyflakes `E` and `F` codes by default.
 select = [
     "E", "W",  # see: https://pypi.org/project/pycodestyle
