@@ -1,8 +1,8 @@
 from datetime import datetime
-
+from configure import *
 from loguru import logger
 
-import github_help
+import github_helper
 
 
 def log_init():
@@ -17,7 +17,7 @@ def log_init():
         )
 
 log_init()
-g = github_help.GithubHelper("****")
+g = github_helper.GithubHelper("GITHUB_TOKEN")
 print(g.get_user_name())
 g.RefreshData("paddle",datetime(2023,11,1))
 g.GetRepoList()
