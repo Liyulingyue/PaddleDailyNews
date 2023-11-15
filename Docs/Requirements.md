@@ -34,7 +34,9 @@
 
 3. 系统需要能够自动拉取PaddlePaddle Github仓库的PR和Issue；
 
-4. 系统能够对拉取到的PR和Issue进行加工
+4. 系统能够对拉取到的PR和Issue进行加工。
+   - 统计获取到的PR数量
+   - 统计获取到的ISSUE数量 ** need gouzil implement corresponding function to get all issue **
 
 5. 系统需要能够将拉取的内容转化成日报新闻格式；
 

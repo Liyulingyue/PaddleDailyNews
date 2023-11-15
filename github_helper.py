@@ -12,7 +12,7 @@ if TYPE_CHECKING:
 
 
 # 暂不支持多线程(没有读写锁)
-class GithubHelper:
+class GithubHelper(object):
     def __init__(self, token: str, org: str = "paddlepaddle") -> None:
         self.g = Github(auth=Auth.Token(token), per_page=100)
         self.data_ccashe: dict[str, list[PullRequest] | None] = {}
@@ -88,7 +88,7 @@ class GithubHelper:
         获取当前组织下所有的仓库
         """
         logger.info(f"start get org repos: {self.__org.login}")
-        # 为什么不用all, 防止一些研发大哥把 private 的项目公开出来
+        # NOTE: 为什么不用all, 防止一些研发大哥把 private 的项目公开出来
         repos: PaginatedList[Repository] = self.__org.get_repos(type="public")
         res: list[str] = []
         for i in repos:
@@ -100,4 +100,5 @@ class GithubHelper:
         logger.info(f"end get org repos: {self.__org.login}")
         return res
 
-
+    def PreprocessInformation(self):
+        pass
