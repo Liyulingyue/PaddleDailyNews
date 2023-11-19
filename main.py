@@ -2,7 +2,7 @@ from datetime import datetime
 
 from loguru import logger
 
-import github_help
+from github_help import CacheMode, GithubHelper
 
 
 def log_init():
@@ -13,12 +13,12 @@ def log_init():
         encoding="utf-8",
         enqueue=True,
         retention="10d",
-        level="DEBUG"
-        )
+        level="DEBUG",
+    )
+
 
 log_init()
-g = github_help.GithubHelper("****")
+g = GithubHelper("****")
 print(g.get_user_name())
-g.RefreshData("paddle",datetime(2023,11,1))
+g.RefreshData([CacheMode.PR, CacheMode.ISSUES], datetime(2023, 11, 18), ["paddle"])
 g.GetRepoList()
-
