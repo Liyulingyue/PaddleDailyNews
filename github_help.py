@@ -78,7 +78,7 @@ class GithubCacheData:
 class GithubHelper:
     def __init__(self, token: str, org: str = "paddlepaddle") -> None:
         self.g = Github(auth=Auth.Token(token), per_page=100)
-        # 存储层级: 仓库 -> (pr|issues) -> list[PullRequest]
+        # 存储层级: 仓库 -> (pr|issues) -> (list[PullRequest] | list[Issue])
         self.data_ccashe: dict[str, list[GithubCacheData]] = {}
         # 请不要修改 org, 如果需要修改请重新创建一个 GithubHelper
         self.__org: Organization = self.g.get_organization(org)
