@@ -110,7 +110,8 @@ class GithubHelper(object):
             res.append(i.name)
             if write_cache and i.name not in self.data_ccashe.keys():
                 logger.debug(f"write cache {self.__org.login}: {i.name}")
-                self.data_ccashe[i.name] = []
+                # 全转小写
+                self.data_ccashe[i.name.casefold()] = []
 
         logger.info(f"end get org repos: {self.__org.login}")
         return res
@@ -169,7 +170,7 @@ class GithubHelper(object):
                         self.set_cache(
                             repo_name,
                             GithubCacheData(
-                                CacheMode.PR,
+                                CacheMode.ISSUES,
                                 self.RefreshIssuesData(
                                     repo_name=repo_name,
                                     start_time=start_time,
