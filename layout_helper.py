@@ -1,11 +1,12 @@
-from statistic_helper import *
+from statistic_helper import *  # noqa: F403
+
 
 class LayoutHelper(object):
     def __init__(self):
         super().__init__()
         self.MarkDown_str = ""
 
-    def generate_layout(self, s:StatisticHelper):
+    def generate_layout(self, s: StatisticHelper):  # noqa: F405
         self.MarkDown_str = f"""
 # 飞桨日报
 {s.year}年{s.month}月{s.day}日 PR:{s.pr_num}条 ISSUE:{s.issue_num}条
@@ -59,6 +60,6 @@ class LayoutHelper(object):
 感谢各位开发者对PaddlePaddle的持续关注和贡献，让我们一起推动深度学习技术的发展和应用。期待明天更多的精彩！
         """
 
-    def Export2MarkdownFile(self, path='DailyReport.md'):
-        with open(path,'w',encoding='utf8') as f:
+    def Export2MarkdownFile(self, path="DailyReport.md"):
+        with open(path, "w", encoding="utf8") as f:
             f.write(self.MarkDown_str)

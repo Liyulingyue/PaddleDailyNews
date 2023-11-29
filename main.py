@@ -1,10 +1,12 @@
 from datetime import datetime
-from configure import *
+
 from loguru import logger
 
+from configure import *  # noqa: F403
 from github_helper import CacheMode, GithubHelper
-from statistic_helper import StatisticHelper
 from layout_helper import LayoutHelper
+from statistic_helper import StatisticHelper
+
 
 def log_init():
     # TODO(gouzil): 改个前缀
@@ -19,7 +21,7 @@ def log_init():
 
 
 log_init()
-g = GithubHelper(GITHUB_TOKEN)
+g = GithubHelper(GITHUB_TOKEN)  # noqa: F405
 print(g.get_user_name())
 g.RefreshData([CacheMode.PR, CacheMode.ISSUES], datetime(2023, 11, 18), ["paddle"])
 g.GetRepoList()
