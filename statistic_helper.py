@@ -1,7 +1,7 @@
 class StatisticHelper(object):
     # 对githubhelper中的信息进行统计
     def __init__(self, date=(0,0,0)):
-        super.__init__()
+        super(self).__init__()
         self.year = date[0]
         self.month = date[1]
         self.day = date[2]
@@ -13,4 +13,5 @@ class StatisticHelper(object):
         pr_number = 0
         for key in g_data.keys():
             pr_number = len(g_data[key])
-        return pr_number
+        self.pr_num = pr_number
+        return self.pr_num
