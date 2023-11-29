@@ -2,7 +2,7 @@ from statistic_helper import *
 
 class LayoutHelper(object):
     def __init__(self):
-        super(self).__init__()
+        super().__init__()
 
     def generate_layout(self, s:StatisticHelper):
         MarkDown_str = f"""

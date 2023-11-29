@@ -1,7 +1,7 @@
 class StatisticHelper(object):
     # 对githubhelper中的信息进行统计
     def __init__(self, date=(0,0,0)):
-        super(self).__init__()
+        super().__init__()
         self.year = date[0]
         self.month = date[1]
         self.day = date[2]
