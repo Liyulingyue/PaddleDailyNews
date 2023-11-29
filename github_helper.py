@@ -75,7 +75,7 @@ class GithubCacheData:
 
 
 # 暂不支持多线程(没有读写锁)
-class GithubHelper:
+class GithubHelper(object):
     def __init__(self, token: str, org: str = "paddlepaddle") -> None:
         self.g = Github(auth=Auth.Token(token), per_page=100)
         # 存储层级: 仓库 -> (pr|issues) -> (list[PullRequest] | list[Issue])
