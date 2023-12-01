@@ -49,7 +49,7 @@ class GithubCacheData:
         self.data = data
         self.update_time = update_time
 
-    def set_key(self, key: CacheMode):
+    def set_key(self, key: CacheMode) -> None:
         assert isinstance(self.key, CacheMode)
         self.key = key
 
@@ -57,16 +57,14 @@ class GithubCacheData:
         assert isinstance(self.key, CacheMode)
         return self.key
 
-    def set_data(self, data: list[PullRequest] | list[Issue]):
-        assert isinstance(self.data, list)
+    def set_data(self, data: list[PullRequest] | list[Issue]) -> None:
         self.data = data
 
     def get_data(self) -> list[PullRequest] | list[Issue]:
         assert isinstance(self.data, list)
         return self.data
 
-    def set_update_time(self, update_time: datetime = datetime.now()):
-        assert isinstance(self.key, str)
+    def set_update_time(self, update_time: datetime = datetime.now()) -> None:
         self.update_time = update_time
 
     def get_update_time(self) -> datetime:
