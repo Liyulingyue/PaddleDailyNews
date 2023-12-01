@@ -34,7 +34,7 @@ class CacheMode(Flag):
 class GithubCacheData:
     def __init__(
         self,
-        key: CacheMode | None = None,
+        key: CacheMode = CacheMode.PR,
         data: list[PullRequest] | list[Issue] | None = None,
         update_time: datetime = datetime.now(),
     ):
@@ -53,8 +53,8 @@ class GithubCacheData:
         assert isinstance(self.key, CacheMode)
         self.key = key
 
-    def get_key(self) -> str:
-        assert isinstance(self.key, str)
+    def get_key(self) -> CacheMode:
+        assert isinstance(self.key, CacheMode)
         return self.key
 
     def set_data(self, data: list[PullRequest] | list[Issue]):
@@ -107,20 +107,31 @@ class GithubHelper(object):
         repos: PaginatedList[Repository] = self.__org.get_repos(type="public")
         res: list[str] = []
         for i in repos:
-            res.append(i.name)
-            if write_cache and i.name not in self.data_ccashe.keys():
-                logger.debug(f"write cache {self.__org.login}: {i.name}")
+            repo_name = i.name.casefold()
+            res.append(repo_name)
+            if write_cache and repo_name not in self.data_ccashe.keys():
+                logger.debug(f"write cache {self.__org.login}: {repo_name}")
                 # 全转小写
-                self.data_ccashe[i.name.casefold()] = []
+                self.data_ccashe[repo_name] = []
 
         logger.info(f"end get org repos: {self.__org.login}")
         return res
 
-    def get_ccashe(self) -> dict[str, list[GithubCacheData]]:
+    def get_ccashe(
+        self,
+        repo_name: str | None = None,
+        model: CacheMode = CacheMode.PR,
+    ) -> dict[str, list[GithubCacheData]] | list[PullRequest] | list[Issue] | None:
         """
         获取已缓存的数据
         """
-        return self.data_ccashe
+        if repo_name is None:
+            return self.data_ccashe
+
+        repo_name = repo_name.casefold()
+        for i in self.data_ccashe[repo_name]:
+            if i.get_key() is model:
+                return i.get_data()
 
     def set_cache(self, key: str, data: GithubCacheData):
         """
