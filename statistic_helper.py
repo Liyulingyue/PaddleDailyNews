@@ -1,3 +1,4 @@
+from github_helper import GithubHelper
 class StatisticHelper(object):
     # 对githubhelper中的信息进行统计
     def __init__(self, date=(0,0,0)):
@@ -8,7 +9,7 @@ class StatisticHelper(object):
         self.pr_num = 0
         self.issue_num = 0
 
-    def get_total_pr_number(self, g_data):
+    def get_total_pr_number(self, g: GithubHelper):
         # NOTE: 当前只支持g_data包含Paddle仓库下的pr提取结果
         pr_number = 0
         for key in g_data.keys():
