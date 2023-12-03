@@ -215,11 +215,12 @@ class GithubHelper(object):
         pulls: PaginatedList[PullRequest] = repo.get_pulls(state="all", base=base)
         for i in pulls:
             logger.debug(f"request pr number: {i.number}, pr create time: {i.created_at}, pr status: {i.state}")
-            if not i.created_at < end_time or not i.created_at > start_time:
+            if not i.created_at > start_time:
                 logger.debug(f"end request pr number: {i.number}")
                 break
-            # 不在这里做细分筛选，只进行数据收集
-            res_list.append(i)
+            if i.created_at <= end_time:
+                # 不在这里做细分筛选，只进行数据收集
+                res_list.append(i)
 
         logger.info(f"requast pr list {self.__org.login}/{repo_name} branch: {base} end")
         logger.debug(f"requast pr list len: {len(res_list)}")
@@ -246,11 +247,12 @@ class GithubHelper(object):
         issues: PaginatedList[Issue] = repo.get_issues(state="all")
         for i in issues:
             logger.debug(f"request issue number: {i.number}, create time: {i.created_at}, status: {i.state}")
-            if not i.created_at < end_time or not i.created_at > start_time:
+            if not i.created_at > start_time:
                 logger.debug(f"end request issue number: {i.number}")
                 break
-            # 不在这里做细分筛选，只进行数据收集
-            res_list.append(i)
+            if i.created_at <= end_time:
+                # 不在这里做细分筛选，只进行数据收集
+                res_list.append(i)
 
         logger.info(f"requast issues list {self.__org.login}/{repo_name} end")
         logger.debug(f"requast issues list len: {len(res_list)}")
