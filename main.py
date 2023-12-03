@@ -21,13 +21,16 @@ def log_init():
 
 
 log_init()
-g = GithubHelper(GITHUB_TOKEN)  # noqa: F405
-print(g.get_user_name())
-g.RefreshData([CacheMode.PR, CacheMode.ISSUES], datetime(2023, 11, 28), ["paddle"])
-g.GetRepoList()
-g.get_ccashe()
-cache_pr = g.get_ccashe("paddle")
-cache_issue = g.get_ccashe("paddle", CacheMode.ISSUES)
+g_helper = GithubHelper(GITHUB_TOKEN)  # noqa: F405
+print(g_helper.get_user_name())
+g_helper.RefreshData([CacheMode.PR, CacheMode.ISSUES],
+                     start_time=datetime(2023, 11, 28),
+                     end_time=datetime(2023, 11, 29),
+                     repo_names = ["paddle"])
+g_helper.GetRepoList()
+g_helper.get_ccashe()
+cache_pr = g_helper.get_ccashe("paddle")
+cache_issue = g_helper.get_ccashe("paddle", CacheMode.ISSUES)
 
 s_helper = StatisticHelper()
 l_helper = LayoutHelper()

@@ -1,4 +1,5 @@
-from github_helper import GithubHelper
+from github_helper import GithubHelper, CacheMode
+
 class StatisticHelper(object):
     # 对githubhelper中的信息进行统计
     def __init__(self, date=(0,0,0)):
@@ -9,10 +10,9 @@ class StatisticHelper(object):
         self.pr_num = 0
         self.issue_num = 0
 
-    def get_total_pr_number(self, g: GithubHelper):
-        # NOTE: 当前只支持g_data包含Paddle仓库下的pr提取结果
-        pr_number = 0
-        for key in g_data.keys():
-            pr_number = len(g_data[key])
-        self.pr_num = pr_number
-        return self.pr_num
+    def refresh_number(self, g_helper: GithubHelper):
+        g_helper.get_ccashe()
+        cache_pr = g_helper.get_ccashe("paddle")
+        cache_issue = g_helper.get_ccashe("paddle", CacheMode.ISSUES)
+        self.pr_num = len(cache_pr)
+        self.issue_num = len(cache_issue)

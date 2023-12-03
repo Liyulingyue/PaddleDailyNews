@@ -6,10 +6,10 @@ class LayoutHelper(object):
         super().__init__()
         self.MarkDown_str = ""
 
-    def generate_layout(self, s: StatisticHelper):  # noqa: F405
+    def generate_layout(self, s_helper: StatisticHelper):  # noqa: F405
         self.MarkDown_str = f"""
 # 飞桨日报
-{s.year}年{s.month}月{s.day}日 PR:{s.pr_num}条 ISSUE:{s.issue_num}条
+{s_helper.year}年{s_helper.month}月{s_helper.day}日 PR:{s_helper.pr_num}条 ISSUE:{s_helper.issue_num}条
 
 ---
 
