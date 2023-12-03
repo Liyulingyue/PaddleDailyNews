@@ -251,8 +251,11 @@ class GithubHelper(object):
                 logger.debug(f"end request issue number: {i.number}")
                 break
             if i.created_at <= end_time:
-                # 不在这里做细分筛选，只进行数据收集
-                res_list.append(i)
+                # 新版 issues 里面会包含 prs
+                # https://docs.github.com/en/rest/issues/issues?apiVersion=2022-11-28#list-issues-assigned-to-the-authenticated-user
+                if i.pull_request is None:
+                    # 不在这里做细分筛选，只进行数据收集
+                    res_list.append(i)
 
         logger.info(f"requast issues list {self.__org.login}/{repo_name} end")
         logger.debug(f"requast issues list len: {len(res_list)}")
