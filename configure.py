@@ -1,1 +1,2 @@
-GITHUB_TOKEN: str = "**************"
+GITHUB_TOKEN = "*******"
+ERNIE_TOKEN = '*******'
