@@ -59,6 +59,38 @@ def get_score_of_a_change(raw_str, gap_length = 1500):
     sum_score = sum_score/count
     return sum_score, sum_comment, sum_introduction
 
+def get_score_of_a_issue(raw_str, gap_length = 1500):
+    sum_score = 0
+    sum_comment = ""
+    sum_introduction = ""
+    count = 0
+    changed_codes = raw_str.replace(" ", "")
+    cut_str = [changed_codes[i:i + gap_length] for i in range(0, len(changed_codes), gap_length)]
+    for codes in cut_str:
+        prompt = \
+            f"""
+        你是百度公司的员工，你之前是程序员，现在是产品经理，你对于代码和产品都非常了解，你将根据issue信息进行打分以评价这个issue的重要程度。
+        你对issue的评价和这个issue的技术难度等因素都有关系。你需要非常具有发散性思维来考虑并给出具体的得分数值。有些issue非常困难并重要，有些则非常不重要。
+        issue的信息是{codes}
+        请以Json形式给出回复，Json返回的内容格式为：
+        {str('{')}"
+        "得分":float
+        "评分理由":str
+        "修改内容简单介绍":str
+        {str('}')}
+        得分的取值介于0到10。
+        """
+        try:
+            result = get_llm_json_answer(prompt)
+            sum_score += result["得分"]
+            sum_comment += result["评分理由"]
+            sum_introduction += result["修改内容简单介绍"]
+            count += 1
+        except:
+            count += 0
+    sum_score = sum_score/count
+    return sum_score, sum_comment, sum_introduction
+
 def get_summary_of_a_change(raw_str, gap_length = 1500):
     sum_introduction = ""
     changed_codes = raw_str.replace(" ", "")

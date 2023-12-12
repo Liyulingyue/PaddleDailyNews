@@ -80,16 +80,25 @@ class LayoutHelper(object):
         return Markdown_str
 
     def generate_layout_Issue_infor(self, s_helper: StatisticHelper):
-        Markdown_str = f"""
+        score_threshold = 0 if len(s_helper.issue_list)<3 else max(0, s_helper.issue_list[2]["score"])
+        Markdown_str = ""
+        Markdown_str += f"""
 ## ISSUE追踪
 *数据分析：对当日ISSUE的统计，如问题类型分布、解决问题所消耗的时间等。*
 
-1. **[ISSUE#XXXX](https://github.com/PaddlePaddle/Paddle/issues/XXXX)**
-    - 内容介绍: *详细描述：描述此ISSUE的主要问题、影响范围及当前状态。*
-2. **[ISSUE#XXXX](https://github.com/PaddlePaddle/Paddle/issues/XXXX)**
-    - 内容介绍: *详细描述：对另一热点ISSUE进行简要介绍，引发读者关注。*
+        """
+        for issue_infor in s_helper.issue_list:
+            if issue_infor["score"] >= score_threshold:
+                Markdown_str += f"""
+1. **[#{issue_infor['id']}](https://github.com/PaddlePaddle/Paddle/issues/{issue_infor['id']})**
+    - 内容介绍：{issue_infor["comments"]}
+    - 量化评分：{issue_infor["score"]}
+                        """
+
+        Markdown_str += f"""
 
 ---
 
-        """
+                """
         return Markdown_str
+
