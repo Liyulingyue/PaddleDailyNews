@@ -13,6 +13,7 @@ class StatisticHelper(object):
         self.pr_num = 0
         self.issue_num = 0
         self.pr_list = []
+        self.issue_list = []
 
     def refresh_number(self, g_helper: GithubHelper):
         g_helper.get_ccashe()
@@ -42,3 +43,24 @@ class StatisticHelper(object):
             self.pr_list.append({"title": title, "id": id, "user": user, "score": score, "comments": comments, "introduction":introduction})
 
         self.pr_list.sort(key=lambda x: x['score'], reverse=True)
+
+    def get_score_of_issue(self, g_helper: GithubHelper):
+        g_helper.get_ccashe()
+        cache_issue = g_helper.get_ccashe("paddle", CacheMode.ISSUES)
+        self.issue_list = []
+        for issue in cache_issue:
+            print(f"make score in {issue.number}, total issue number is {len(cache_issue)}")
+            title = issue.title
+            id = issue.number
+            user = issue.user
+            content = issue.body
+            try:
+                score, comments, introduction = get_score_of_a_issue(content)
+            except:
+                score = -1
+                comments = ""
+                introduction = ""
+                print(traceback.format_exc())
+            self.issue_list.append({"title": title, "id": id, "user": user, "score": score, "comments": comments, "introduction":introduction})
+
+        self.issue_list.sort(key=lambda x: x['score'], reverse=True)
