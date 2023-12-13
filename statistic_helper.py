@@ -14,6 +14,8 @@ class StatisticHelper(object):
         self.issue_num = 0
         self.pr_list = []
         self.issue_list = []
+        self.pr_rank_list = []
+        self.issue_rank_list = []
 
     def refresh_number(self, g_helper: GithubHelper):
         g_helper.get_ccashe()
@@ -64,3 +66,34 @@ class StatisticHelper(object):
             self.issue_list.append({"title": title, "id": id, "user": user, "score": score, "comments": comments, "introduction":introduction})
 
         self.issue_list.sort(key=lambda x: x['score'], reverse=True)
+
+    def get_rank_of_contributors(self, g_helper: GithubHelper):
+        g_helper.get_ccashe()
+        cache_pr = g_helper.get_ccashe("paddle")
+        tmp_dict = {}
+        self.pr_rank_list = []
+        for pr in cache_pr:
+            if pr.user.login in tmp_dict:
+                tmp_dict[pr.user.login] += 1
+            else:
+                tmp_dict[pr.user.login] = 1
+        for user in tmp_dict:
+            self.pr_rank_list.append({"user": user, "times": tmp_dict[user]})
+
+        self.pr_rank_list.sort(key=lambda x: x['times'], reverse=True)
+
+
+    def get_rank_of_issuers(self, g_helper: GithubHelper):
+        g_helper.get_ccashe()
+        cache_issue = g_helper.get_ccashe("paddle", CacheMode.ISSUES)
+        tmp_dict = {}
+        self.issue_rank_list = []
+        for issue in cache_issue:
+            if issue.user.login in tmp_dict:
+                tmp_dict[issue.user.login] += 1
+            else:
+                tmp_dict[issue.user.login] = 1
+        for user in tmp_dict:
+            self.issue_rank_list.append({"user": user, "times": tmp_dict[user]})
+
+        self.issue_rank_list.sort(key=lambda x: x['times'], reverse=True)
