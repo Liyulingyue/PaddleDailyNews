@@ -2,9 +2,10 @@ from statistic_helper import *  # noqa: F403
 from llm_chat import *
 
 class LayoutHelper(object):
-    def __init__(self):
+    def __init__(self, repo_name="Paddle"):
         super().__init__()
         self.MarkDown_str = ""
+        self.repo_name = repo_name
 
     def generate_layout(self, s_helper: StatisticHelper):  # noqa: F405
         self.MarkDown_str = ""
@@ -20,9 +21,12 @@ class LayoutHelper(object):
         with open(path, "w", encoding="utf8") as f:
             f.write(self.MarkDown_str)
 
+    def GetMarkdownStr(self):
+        return self.MarkDown_str
+
     def generate_layout_header(self, s_helper: StatisticHelper):
         Markdown_str = f"""
-# 飞桨日报
+# {self.repo_name}日报
 {s_helper.year}年{s_helper.month}月{s_helper.day}日 PR:{s_helper.pr_num}条 ISSUE:{s_helper.issue_num}条
 
 ---
