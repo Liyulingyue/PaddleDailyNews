@@ -1,10 +1,7 @@
 import erniebot
 import json
-from configure import ERNIE_TOKEN
 
 def get_llm_answer(prompt):
-    erniebot.api_type = 'aistudio'
-    erniebot.access_token = ERNIE_TOKEN
     response = erniebot.ChatCompletion.create(
         model='ernie-bot',
         messages=[{'role': 'user', 'content': prompt}],
