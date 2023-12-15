@@ -1,3 +1,21 @@
 -r requirements.txt
 
 pre-commit>=3.0.0
+
+# local llm
+modelscope
+protobuf
+transformers>=4.30.2
+cpm_kernels
+torch>=2.0; sys_platform != "darwin"
+torch --index-url https://download.pytorch.org/whl/nightly/cpu; sys_platform == "darwin"
+gradio~=3.39
+sentencepiece
+accelerate
+sse-starlette
+streamlit>=1.29.0
+fastapi>=0.104.1
+uvicorn~=0.24.0
+loguru~=0.7.2
+mdtex2html>=1.2.0
+latex2mathml>=3.76.0

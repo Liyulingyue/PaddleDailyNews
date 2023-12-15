@@ -6,11 +6,11 @@ from configure import *  # noqa: F403
 from github_helper import CacheMode, GithubHelper
 from layout_helper import LayoutHelper
 from statistic_helper import StatisticHelper
-from utils import log_init
+from utils import llm_init, log_init
 
 Year = 2023
 Month = 12
-Day = 14
+Day = 15
 ORGANIZATION = "PaddlePaddle"
 REPO_NAME = "paddle"
 
@@ -18,6 +18,7 @@ erniebot.api_type = "aistudio"
 erniebot.access_token = ERNIE_TOKEN
 
 log_init()
+model = llm_init()
 g_helper = GithubHelper(GITHUB_TOKEN, org=ORGANIZATION)  # noqa: F405
 print(g_helper.get_user_name())
 g_helper.RefreshData(
@@ -27,7 +28,7 @@ g_helper.RefreshData(
     repo_names=[REPO_NAME],
 )
 
-s_helper = StatisticHelper(date=(Year, Month, Day))
+s_helper = StatisticHelper(model, date=(Year, Month, Day))
 s_helper.refresh_number(g_helper)
 s_helper.get_score_of_pr(g_helper)
 s_helper.get_score_of_issue(g_helper)

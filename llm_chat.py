@@ -1,35 +1,13 @@
-import json
-
-import erniebot
+from llm import LLM_base
 
 
-def get_llm_answer(prompt: str):
-    response = erniebot.ChatCompletion.create(
-        model="ernie-bot",
-        messages=[{"role": "user", "content": prompt}],
-        top_p=0.1,
-        temperature=0.1,
-        penalty_score=1.0,
-    )
-    result = response.get_result()
-    return result
-
-
-def extract_json_from_llm_answer(result):
-    s_id = result.index("```json")
-    e_id = result.index("```", s_id + 7)
-    json_str = result[s_id + 7 : e_id]
-    json_dict = json.loads(json_str)
+def get_llm_json_answer(model: LLM_base, prompt: str):
+    result = model.get_llm_answer(prompt)
+    json_dict = model.extract_json_from_llm_answer(result)
     return json_dict
 
 
-def get_llm_json_answer(prompt: str):
-    result = get_llm_answer(prompt)
-    json_dict = extract_json_from_llm_answer(result)
-    return json_dict
-
-
-def get_score_of_a_change(raw_str: str, gap_length: int = 1500):
+def get_score_of_a_change(model: LLM_base, raw_str: str, gap_length: int = 1500):
     sum_score = 0
     sum_comment = ""
     sum_introduction = ""
@@ -50,7 +28,7 @@ def get_score_of_a_change(raw_str: str, gap_length: int = 1500):
         代码中以`+`开头的行是这次改动增加的行，`-`开头的行是这次改动删除的行，其他符号开头的代码仅用于提供上下文信息。你需要进行评价的代码是：{codes}
         """
         try:
-            result = get_llm_json_answer(prompt)
+            result = get_llm_json_answer(model, prompt)
             sum_score += result["得分"]
             sum_comment += result["评分理由"]
             sum_introduction += result["修改内容简单介绍"]
@@ -61,7 +39,7 @@ def get_score_of_a_change(raw_str: str, gap_length: int = 1500):
     return sum_score, sum_comment, sum_introduction
 
 
-def get_score_of_a_issue(raw_str: str, gap_length: int = 1500) -> tuple[float, str, str]:
+def get_score_of_a_issue(model: LLM_base, raw_str: str, gap_length: int = 1500) -> tuple[float, str, str]:
     sum_score = 0
     sum_comment: str = ""
     sum_introduction: str = ""
@@ -82,7 +60,7 @@ def get_score_of_a_issue(raw_str: str, gap_length: int = 1500) -> tuple[float, s
         得分的取值介于0到10。
         """
         try:
-            result = get_llm_json_answer(prompt)
+            result = get_llm_json_answer(model, prompt)
             sum_score += result["得分"]
             sum_comment += result["评分理由"]
             sum_introduction += result["修改内容简单介绍"]
@@ -93,7 +71,7 @@ def get_score_of_a_issue(raw_str: str, gap_length: int = 1500) -> tuple[float, s
     return sum_score, sum_comment, sum_introduction
 
 
-def get_summary_of_a_change(raw_str: str, gap_length: int = 1500):
+def get_summary_of_a_change(model: LLM_base, raw_str: str, gap_length: int = 1500):
     sum_introduction = ""
     changed_codes = raw_str.replace(" ", "")
     cut_str = [changed_codes[i : i + gap_length] for i in range(0, len(changed_codes), gap_length)]
@@ -107,7 +85,7 @@ def get_summary_of_a_change(raw_str: str, gap_length: int = 1500):
         代码改动的介绍文本是：{codes}
         """
         try:
-            result = get_llm_json_answer(prompt)
+            result = get_llm_json_answer(model, prompt)
             sum_introduction += result["介绍"]
         except Exception:
             pass

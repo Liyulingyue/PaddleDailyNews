@@ -6,12 +6,13 @@ from github.PullRequest import PullRequest
 
 from configure import GITHUB_TOKEN
 from github_helper import CacheMode, GithubHelper
+from llm import LLM_base
 from llm_chat import *  # noqa: F403
 
 
 class StatisticHelper(object):
     # 对githubhelper中的信息进行统计
-    def __init__(self, date: tuple[int, int, int] = (0, 0, 0)):
+    def __init__(self, model: LLM_base, date: tuple[int, int, int] = (0, 0, 0)):
         super().__init__()
         self.year: int = date[0]
         self.month: int = date[1]
@@ -22,6 +23,7 @@ class StatisticHelper(object):
         self.issue_list = []
         self.pr_rank_list = []
         self.issue_rank_list = []
+        self.model: LLM_base = model
 
     def refresh_number(self, g_helper: GithubHelper):
         g_helper.get_ccashe()
@@ -47,7 +49,7 @@ class StatisticHelper(object):
             try:
                 requset_header: dict[str, str] = {"Authorization": f"Bearer {GITHUB_TOKEN}"}
                 r = requests.get(url=diff_url, headers=requset_header)
-                score, comments, introduction = get_score_of_a_change(r.text)
+                score, comments, introduction = get_score_of_a_change(self.model, r.text)
             except Exception:
                 score = -1
                 comments = ""
@@ -79,7 +81,7 @@ class StatisticHelper(object):
             user = issue.user
             content = issue.body
             try:
-                score, comments, introduction = get_score_of_a_issue(content)
+                score, comments, introduction = get_score_of_a_issue(self.model, content)
             except Exception:
                 score = -1
                 comments = ""
@@ -101,9 +103,11 @@ class StatisticHelper(object):
     def get_rank_of_contributors(self, g_helper: GithubHelper):
         g_helper.get_ccashe()
         cache_pr = g_helper.get_ccashe("paddle")
-        tmp_dict = {}
+        assert isinstance(cache_pr, list)
+        tmp_dict: dict[str, int] = {}
         self.pr_rank_list = []
         for pr in cache_pr:
+            assert isinstance(pr, PullRequest)
             if pr.user.login in tmp_dict:
                 tmp_dict[pr.user.login] += 1
             else:
