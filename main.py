@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from configure import * # noqa: F403
 from utils import log_init
+import erniebot
 
 from github_helper import CacheMode, GithubHelper
 from statistic_helper import StatisticHelper
@@ -12,6 +13,9 @@ Month = 12
 Day = 14
 ORGANIZATION = "PaddlePaddle"
 REPO_NAME = "paddle"
+
+erniebot.api_type = 'aistudio'
+erniebot.access_token = ERNIE_TOKEN
 
 log_init()
 g_helper = GithubHelper(GITHUB_TOKEN, org=ORGANIZATION)  # noqa: F405
