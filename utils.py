@@ -1,5 +1,6 @@
 from loguru import logger
 
+
 def log_init():
     # TODO(gouzil): 改个前缀
     logger.add(
