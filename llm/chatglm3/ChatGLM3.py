@@ -16,8 +16,19 @@ class ChatGLM3(LLM_base):
         super().__init__(model_name)
         self.tokenizer = None
         self.load_model()
+        # 字符串上限
+        self.set_gap_length()
 
-    def load_model(self):
+    def set_gap_length(self) -> None:
+        match self.model_name:
+            case "ZhipuAI/chatglm3-6b":
+                self.gap_length = 8192
+            case "ZhipuAI/chatglm3-6b-32k":
+                self.gap_length = 32768
+            case _:
+                pass
+
+    def load_model(self) -> None:
         logger.info("load model.......")
         model_path = f"model/{self.model_name}"
         self.tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
@@ -26,7 +37,7 @@ class ChatGLM3(LLM_base):
                 # mps 目前优化不行, link: https://github.com/THUDM/ChatGLM3/discussions/251
                 # self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True).half().to("mps")
                 # self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True).float()
-                self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True).half().float()
+                self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True).float()
             case "cuda":
                 self.model = load_model_cuda(model_path)
             case "cpu" | _:
@@ -45,15 +56,7 @@ class ChatGLM3(LLM_base):
         )
         assert isinstance(response, str)
 
-        # clean mem
-        # gc.collect()
-        # match self.get_device():
-        #     case "mps":
-        #         torch.mps.empty_cache()
-        #     case "cuda":
-        #         torch.cuda.empty_cache()
-        #     case _:
-        #         pass
+        # self.clean_mem()
 
         logger.info(f"get_llm_answer end, Generation time: {time.time()-start_time}")
         return response
@@ -64,3 +67,21 @@ class ChatGLM3(LLM_base):
         json_str = result[s_id : e_id + 1]
         json_dict = json.loads(json_str)
         return json_dict
+
+    def get_device(self) -> str:
+        if torch.backends.mps.is_built():
+            return "mps"
+        elif torch.backends.cuda.is_built():
+            return "cuda"
+
+        return "cpu"
+
+    def clean_mem(self):
+        gc.collect()
+        match self.get_device():
+            case "mps":
+                torch.mps.empty_cache()
+            case "cuda":
+                torch.cuda.empty_cache()
+            case _:
+                pass

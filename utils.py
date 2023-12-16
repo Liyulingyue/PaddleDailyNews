@@ -35,5 +35,5 @@ def llm_init() -> LLM_base:
             return ChatGLM3(LLM)
         case "":
             raise RuntimeError("Please fill in LLM in the configuration file")
-        case _:
+        case "ernie" | _:
             return Ernie("")

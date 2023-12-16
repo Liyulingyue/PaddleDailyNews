@@ -1,7 +1,5 @@
 from datetime import datetime, timedelta
 
-import erniebot
-
 from configure import *  # noqa: F403
 from github_helper import CacheMode, GithubHelper
 from layout_helper import LayoutHelper
@@ -14,8 +12,6 @@ Day = 15
 ORGANIZATION = "PaddlePaddle"
 REPO_NAME = "paddle"
 
-erniebot.api_type = "aistudio"
-erniebot.access_token = ERNIE_TOKEN
 
 log_init()
 model = llm_init()
@@ -35,6 +31,6 @@ s_helper.get_score_of_issue(g_helper)
 s_helper.get_rank_of_contributors(g_helper)
 s_helper.get_rank_of_issuers(g_helper)
 
-l_helper = LayoutHelper(repo_name=REPO_NAME)
+l_helper = LayoutHelper(model=model, repo_name=REPO_NAME)
 l_helper.generate_layout(s_helper)
 l_helper.Export2MarkdownFile()
