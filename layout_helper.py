@@ -1,12 +1,14 @@
-from llm_chat import *  # noqa: F403
+from llm import LLM_base
+from llm_chat import get_summary_of_a_change
 from statistic_helper import StatisticHelper
 
 
 class LayoutHelper(object):
-    def __init__(self, repo_name: str = "Paddle"):
+    def __init__(self, model: LLM_base, repo_name: str = "Paddle"):
         super().__init__()
         self.MarkDown_str = ""
-        self.repo_name = repo_name
+        self.repo_name: str = repo_name
+        self.model: LLM_base = model
 
     def generate_layout(self, s_helper: StatisticHelper):  # noqa: F405
         self.MarkDown_str = ""
@@ -63,7 +65,7 @@ class LayoutHelper(object):
             if pr_infor["score"] >= score_threshold:
                 Markdown_str += f"""
 1. **[#{pr_infor['id']}](https://github.com/PaddlePaddle/Paddle/pull/{pr_infor['id']})**
-    - 内容介绍：{get_summary_of_a_change(pr_infor["introduction"])}
+    - 内容介绍：{get_summary_of_a_change(self.model,pr_infor["introduction"])}
     - 量化评分：{pr_infor["score"]}
                 """
 
