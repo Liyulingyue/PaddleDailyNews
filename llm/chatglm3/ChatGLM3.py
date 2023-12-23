@@ -20,6 +20,9 @@ class ChatGLM3(LLM_base):
         self.set_gap_length()
 
     def set_gap_length(self) -> None:
+        """
+        设置字符串上限
+        """
         match self.model_name:
             case "ZhipuAI/chatglm3-6b":
                 self.gap_length = 8192
@@ -29,23 +32,19 @@ class ChatGLM3(LLM_base):
                 pass
 
     def load_model(self) -> None:
+        """
+        加载模型
+        """
         logger.info("load model.......")
         model_path = f"model/{self.model_name}"
         self.tokenizer = AutoTokenizer.from_pretrained(model_path, trust_remote_code=True)
-        match self.get_device():
-            case "mps":
-                # mps 目前优化不行, link: https://github.com/THUDM/ChatGLM3/discussions/251
-                # self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True).half().to("mps")
-                # self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True).float()
-                self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True).float()
-            case "cuda":
-                self.model = load_model_cuda(model_path)
-            case "cpu" | _:
-                self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True).float()
-        self.model = self.model.eval()
+        self.model = AutoModel.from_pretrained(model_path, trust_remote_code=True, device_map="auto").eval()
         logger.info(f"load model {self.get_device()} success")
 
     def get_llm_answer(self, prompt: str) -> str:
+        """
+        生成结果
+        """
         logger.info("get_llm_answer start")
         logger.debug(f"get_llm_answer len: {len(prompt)}")
         start_time = time.time()
@@ -62,6 +61,9 @@ class ChatGLM3(LLM_base):
         return response
 
     def extract_json_from_llm_answer(self, result: str) -> dict[str, Any]:
+        """
+        提取json格式
+        """
         s_id = result.find("{")
         e_id = result.rfind("}")
         json_str = result[s_id : e_id + 1]
@@ -69,6 +71,9 @@ class ChatGLM3(LLM_base):
         return json_dict
 
     def get_device(self) -> str:
+        """
+        获取设备
+        """
         if torch.backends.mps.is_built():
             return "mps"
         elif torch.backends.cuda.is_built():
@@ -77,6 +82,9 @@ class ChatGLM3(LLM_base):
         return "cpu"
 
     def clean_mem(self):
+        """
+        清理内存
+        """
         gc.collect()
         match self.get_device():
             case "mps":
