@@ -1,6 +1,6 @@
 from loguru import logger
 
-from configure import LLM
+from configure import ERNIE_TOKEN, LLM
 from llm import Ernie, LLM_base
 
 
@@ -40,4 +40,4 @@ def llm_init() -> LLM_base:
         case "":
             raise RuntimeError("Please fill in LLM in the configuration file")
         case "ernie" | _:
-            return Ernie("")
+            return Ernie("", ERNIE_TOKEN)

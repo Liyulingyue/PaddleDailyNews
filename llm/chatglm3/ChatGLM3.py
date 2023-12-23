@@ -8,7 +8,6 @@ from loguru import logger
 from transformers import AutoModel, AutoTokenizer
 
 from ..base import LLM_base
-from .utils import load_model_cuda
 
 
 class ChatGLM3(LLM_base):

@@ -2,7 +2,7 @@ from typing import Any
 
 
 class LLM_base:
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, token: str = ""):
         self.model_name = model_name
         self.model = None
         # 字符串上限: -1 代表不限制

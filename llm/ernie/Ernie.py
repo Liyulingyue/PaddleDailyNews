@@ -7,12 +7,12 @@ from ..base import LLM_base
 
 
 class Ernie(LLM_base):
-    def __init__(self, model_name: str):
+    def __init__(self, model_name: str, token: str):
         super().__init__(model_name)
         # 字符串长度上限
         self.gap_length = 1902
         erniebot.api_type = "aistudio"
-        erniebot.access_token = ERNIE_TOKEN
+        erniebot.access_token = token
 
     def load_model(self):
         pass
