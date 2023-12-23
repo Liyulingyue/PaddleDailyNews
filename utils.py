@@ -1,7 +1,7 @@
 from loguru import logger
 
 from configure import LLM
-from llm import ChatGLM3, Ernie, LLM_base
+from llm import Ernie, LLM_base
 
 
 def log_init():
@@ -28,9 +28,13 @@ def modelscope_download(model_name: str, version: str):
 def llm_init() -> LLM_base:
     match LLM:
         case "ZhipuAI/chatglm3-6b":
+            from llm import ChatGLM3
+
             modelscope_download(LLM, "v1.0.2")
             return ChatGLM3(LLM)
         case "ZhipuAI/chatglm3-6b-32k":
+            from llm import ChatGLM3
+
             modelscope_download(LLM, "v1.0.1")
             return ChatGLM3(LLM)
         case "":
