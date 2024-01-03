@@ -1,11 +1,14 @@
-from statistic_helper import *  # noqa: F403
-from llm_chat import *
+from llm import LLM_base
+from llm_chat import get_summary_of_a_change
+from statistic_helper import StatisticHelper
+
 
 class LayoutHelper(object):
-    def __init__(self, repo_name="Paddle"):
+    def __init__(self, model: LLM_base, repo_name: str = "Paddle"):
         super().__init__()
         self.MarkDown_str = ""
-        self.repo_name = repo_name
+        self.repo_name: str = repo_name
+        self.model: LLM_base = model
 
     def generate_layout(self, s_helper: StatisticHelper):  # noqa: F405
         self.MarkDown_str = ""
@@ -17,7 +20,7 @@ class LayoutHelper(object):
         self.MarkDown_str += self.generate_layout_issue_ranks(s_helper)
         self.MarkDown_str += self.generate_layout_ender(s_helper)
 
-    def Export2MarkdownFile(self, path="DailyReport.md"):
+    def Export2MarkdownFile(self, path: str = "DailyReport.md"):
         with open(path, "w", encoding="utf8") as f:
             f.write(self.MarkDown_str)
 
@@ -35,7 +38,7 @@ class LayoutHelper(object):
         return Markdown_str
 
     def generate_layout_summary(self, s_helper: StatisticHelper):
-        Markdown_str = f"""
+        Markdown_str = """
 ## 概述
 *简述：概述当天PaddlePaddle社区的活跃情况，提及PR和ISSUE的总数，并突出一些重要或热点的内容。*
 
@@ -45,28 +48,28 @@ class LayoutHelper(object):
         return Markdown_str
 
     def generate_layout_PR_infor(self, s_helper: StatisticHelper):
-        score_threshold = 0 if len(s_helper.pr_list)<3 else max(0, s_helper.pr_list[2]["score"])
+        score_threshold = 0 if len(s_helper.pr_list) < 3 else max(0, s_helper.pr_list[2]["score"])
         Markdown_str = ""
         if 0:
-            Markdown_str += f"""
+            Markdown_str += """
 ## PR聚焦
 *数据分析：对当日PR的统计数据进行分析，如提交者的地域分布、PR涉及的模块分布等。*
-        
+
             """
         else:
-            Markdown_str += f"""
+            Markdown_str += """
 ## PR聚焦
 
             """
         for pr_infor in s_helper.pr_list:
-            if pr_infor["score"]>=score_threshold:
+            if pr_infor["score"] >= score_threshold:
                 Markdown_str += f"""
 1. **[#{pr_infor['id']}](https://github.com/PaddlePaddle/Paddle/pull/{pr_infor['id']})**
-    - 内容介绍：{get_summary_of_a_change(pr_infor["introduction"])}
+    - 内容介绍：{get_summary_of_a_change(self.model,pr_infor["introduction"])}
     - 量化评分：{pr_infor["score"]}
                 """
 
-        Markdown_str += f"""
+        Markdown_str += """
 
 ---
 
@@ -74,16 +77,16 @@ class LayoutHelper(object):
         return Markdown_str
 
     def generate_layout_Issue_infor(self, s_helper: StatisticHelper):
-        score_threshold = 0 if len(s_helper.issue_list)<3 else max(0, s_helper.issue_list[2]["score"])
+        score_threshold = 0 if len(s_helper.issue_list) < 3 else max(0, s_helper.issue_list[2]["score"])
         Markdown_str = ""
         if 0:
-            Markdown_str += f"""
+            Markdown_str += """
     ## ISSUE追踪
     *数据分析：对当日ISSUE的统计，如问题类型分布、解决问题所消耗的时间等。*
-    
+
             """
         else:
-            Markdown_str += f"""
+            Markdown_str += """
 ## ISSUE追踪
 
         """
@@ -95,7 +98,7 @@ class LayoutHelper(object):
     - 量化评分：{issue_infor["score"]}
                         """
 
-        Markdown_str += f"""
+        Markdown_str += """
 
 ---
 
@@ -104,7 +107,7 @@ class LayoutHelper(object):
 
     def generate_layout_pr_ranks(self, s_helper: StatisticHelper):
         Markdown_str = ""
-        Markdown_str += f"""
+        Markdown_str += """
 ## 贡献者荣誉榜
 
 ### PR
@@ -117,7 +120,7 @@ class LayoutHelper(object):
 
     def generate_layout_issue_ranks(self, s_helper: StatisticHelper):
         Markdown_str = ""
-        Markdown_str += f"""
+        Markdown_str += """
 
 ### ISSUE
         """
@@ -125,7 +128,7 @@ class LayoutHelper(object):
             Markdown_str += f"""
 1. {infor["user"]}：提交ISSUE{infor["times"]}次
             """
-        Markdown_str += f"""
+        Markdown_str += """
 
 ---
 
@@ -133,7 +136,7 @@ class LayoutHelper(object):
         return Markdown_str
 
     def generate_layout_ender(self, s_helper: StatisticHelper):
-        MarkDown_str = f"""
+        MarkDown_str = """
 
 感谢各位开发者对{self.repo_name}的持续关注和贡献，让我们一起推动深度学习技术的发展和应用。期待明天更多的精彩！
         """
