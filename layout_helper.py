@@ -135,6 +135,6 @@ class LayoutHelper(object):
     def generate_layout_ender(self, s_helper: StatisticHelper):
         MarkDown_str = f"""
 
-感谢各位开发者对PaddlePaddle的持续关注和贡献，让我们一起推动深度学习技术的发展和应用。期待明天更多的精彩！
+感谢各位开发者对{self.repo_name}的持续关注和贡献，让我们一起推动深度学习技术的发展和应用。期待明天更多的精彩！
         """
         return MarkDown_str
